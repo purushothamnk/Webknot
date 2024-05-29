@@ -1,0 +1,7 @@
+package in.webknot.projectmanagement.repositories;
+
+import in.webknot.projectmanagement.models.Employee;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface EmployeeRepository extends JpaRepository<Employee, Long> {
+}
