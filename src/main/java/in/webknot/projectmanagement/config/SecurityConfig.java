@@ -1,8 +1,8 @@
 package in.webknot.projectmanagement.config;
 
-
-
-
+import in.webknot.projectmanagement.security.CustomAccessDeniedHandler;
+import in.webknot.projectmanagement.security.JwtAuthenticationEntryPoint;
+import in.webknot.projectmanagement.security.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,7 +27,7 @@ public class SecurityConfig {
     private JwtAuthenticationFilter filter;
 
     @Autowired
-    private UserDetailsService userDetailService;
+    private UserDetailsService userDetailsService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -44,11 +44,12 @@ public class SecurityConfig {
                 .cors(cors-> cors.disable())
                 .authorizeHttpRequests(
                         auth->auth
-                                .requestMatchers("home/admin/**").hasRole("ADMIN")
-                                .requestMatchers("journal/**").authenticated()
+                                .requestMatchers("home/admin/**").permitAll()
+                                .requestMatchers("home/**").permitAll()
                                 .requestMatchers("/auth/login").permitAll()
                                 .requestMatchers("/auth/create-user").permitAll()
-                                .requestMatchers("/test").authenticated()
+                                .requestMatchers("/admin/create-project").permitAll()
+                                .requestMatchers("/admin/delete-project/{id}").permitAll()
                                 .anyRequest().authenticated())
                 .exceptionHandling(ex->{ex.authenticationEntryPoint(point);ex.accessDeniedHandler(accessDeniedHandler);})
                 .sessionManagement(session-> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
@@ -63,7 +64,7 @@ public class SecurityConfig {
     public DaoAuthenticationProvider dodaoAuthenticationProvider(){
 
         DaoAuthenticationProvider Provider = new DaoAuthenticationProvider();
-        Provider.setUserDetailsService(userDetailService);
+        Provider.setUserDetailsService(userDetailsService);
         Provider .setPasswordEncoder(passwordEncoder);
         return Provider;
 

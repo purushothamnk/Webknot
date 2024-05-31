@@ -1,15 +1,13 @@
 package in.webknot.projectmanagement.entity;
 
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import java.util.ArrayList;
-import java.util.List;
-
-
 import java.util.List;
 
 @Getter
@@ -18,24 +16,27 @@ import java.util.List;
 @Entity
 @Table(name = "projects")
 public class Project {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String projectType;
+
+    private String projectType; // MSP or SA
     private String sourceClient;
     private String endClient;
     private String projectDescription;
-    private String projectStatus;
 
     @ManyToOne
-    private Employee accountManager;
+    @JoinColumn(name = "account_manager_id", referencedColumnName = "userID")
+    private User accountManager;
 
     @ManyToOne
-    private Employee projectManager;
+    @JoinColumn(name = "project_manager_id", referencedColumnName = "userID")
+    private User projectManager;
 
-    @OneToMany(mappedBy = "project")
-    private List<ProjectAllocation> allocations;
+    @JsonManagedReference
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    private List<Employee> employees = new ArrayList<>();
 
-
+    private String projectStatus; // active or inactive
 }
-
