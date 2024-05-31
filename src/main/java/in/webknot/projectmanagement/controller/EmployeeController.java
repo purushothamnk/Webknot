@@ -1,7 +1,7 @@
-package in.webknot.projectmanagement.controllers;
+package in.webknot.projectmanagement.controller;
 
-import in.webknot.projectmanagement.models.Employee;
-import in.webknot.projectmanagement.services.EmployeeService;
+import in.webknot.projectmanagement.entity.Employee;
+import in.webknot.projectmanagement.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +14,11 @@ public class EmployeeController {
 
     @Autowired
     private EmployeeService employeeService;
+
+    public void importEmployees(@RequestParam("file") MultipartFile file) {
+        employeeService.importEmployees(file);
+    }
+
 
     @GetMapping
     public ResponseEntity<List<Employee>> getAllEmployees() {
